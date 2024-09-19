@@ -53,11 +53,11 @@ class Command(BaseCommand):
             User.objects.create_superuser(
                 username='test1',
                 email='test1@gmail.com',
-                password='KJLLKJ;l',
-                first_name='Михаил',
-                last_name='Маркуцин'
+                password='KJL23LKJ;l',
+                first_name='Test',
+                last_name='User'
             )
-            self.stdout.write(self.style.SUCCESS('Суперпользователь Михаил Маркуцин создан'))
+            self.stdout.write(self.style.SUCCESS('Суперпользователь Test User создан'))
 
     def create_moskvoretsky_park(self):
         # Создание объекта "Москворецкий парк"
