@@ -111,18 +111,6 @@
   max-height: calc(100vh - 200px); /* Убедимся, что панель корректно прокручивается */
 }
 
-#incident-panel {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-  background-color: #f8f8f8;
-  padding: 10px;
-  overflow-y: auto;
-  z-index: 1001;
-}
-
 .leaflet-control-attribution {
   display: none;
 }

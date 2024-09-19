@@ -4,8 +4,8 @@ import os
 import shutil
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User, Group
-from monitoring.models import Object, Map, Floor, Detector, Incident
+from django.contrib.auth.models import User
+from monitoring.models import Object, Map, Floor, Detector
 import random
 from PIL import Image  # Подключаем Pillow для работы с изображениями
 from django.utils import timezone
@@ -170,46 +170,3 @@ class Command(BaseCommand):
                 # Log any errors during detector creation
                 logging.error(f"Error creating detector on floor {floor.order}: {e}")
 
-        # После добавления детекторов добавляем инциденты
-        self.add_incidents(floor)
-
-    def add_incidents(self, floor):
-        # Инциденты
-        incidents_list = [
-            "Сладкий сон на рабочем месте",
-            "Разговор по телефону более трех часов",
-            "Курение в неположенном месте",
-            "Громкий смех без причины",
-            "Перекур более 2 часов",
-            "Разлил кофе на сервер",
-            "Принес/ла кота в офис",
-            "Качался/ась на стуле",
-            "Парковка на 3 места"
-        ]
-
-        # Получение всех сотрудников и детекторов на этаже
-        employees = User.objects.filter(is_staff=False, is_superuser=False)
-        detectors = Detector.objects.filter(floor=floor)
-
-
-        for detector in detectors:
-
-            # Создаем случайное количество инцидентов для каждого детектора
-            num_incidents = random.randint(1, 5)
-
-            for _ in range(num_incidents):
-                try:
-                    # Создаем инцидент напрямую через ORM
-                    incident = Incident.objects.create(
-                        description=random.choice(incidents_list),
-                        detector=detector,
-                        user=random.choice(employees) if employees.exists() else None,  # Связь с случайным сотрудником
-                        timestamp=timezone.now()  # Явное задание времени
-                    )
-                    incident.save()
-
-                except Exception as e:
-                    # Log any errors that occur during the creation of incidents
-                    logging.error(f"Error creating incident for detector {detector.name}: {e}")
-
-        self.stdout.write(self.style.SUCCESS(f'Инциденты добавлены для детекторов этажа {floor.order}'))

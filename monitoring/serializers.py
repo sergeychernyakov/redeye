@@ -1,7 +1,7 @@
 # monitoring/serializers.py
 
 from rest_framework import serializers
-from .models import Object, Map, Floor, Detector, Incident
+from .models import Object, Map, Floor, Detector
 
 # 1. ObjectSerializer
 class ObjectSerializer(serializers.ModelSerializer):
@@ -40,12 +40,3 @@ class DetectorSerializer(serializers.ModelSerializer):
             'vpn_password', 'latitude', 'longitude', 'image_port', 'manufacturer', 'model',
             'detector_type', 'access_group', 'camera', 'controller'
         ]  # Указываем все нужные поля
-
-
-# 5. IncidentSerializer
-class IncidentSerializer(serializers.ModelSerializer):
-    detector = DetectorSerializer(read_only=True)  # Вложенный сериализатор для Detector
-
-    class Meta:
-        model = Incident
-        fields = ['id', 'description', 'detector', 'user', 'timestamp']  # Указываем нужные поля

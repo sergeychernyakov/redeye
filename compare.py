@@ -1,60 +1,56 @@
-# monitoring/forms/detector_form.py
+# src/monitoring/models/detector.py
 
-from django import forms
-from monitoring.models import Detector
+from django.db import models
+from django.core.exceptions import ValidationError
+from .map import Map
+from .floor import Floor
 
-class DetectorForm(forms.ModelForm):
+class Detector(models.Model):
     class Meta:
-        model = Detector
-        fields = [
-            'name', 'ip', 'port', 'internal_id', 'address', 'web_interface_url', 
-            'serial_number', 'rtsp_url', 'username', 'password', 'vpn_server_ip',
-            'vpn_username', 'vpn_password', 'latitude', 'longitude',
-            'image_port', 'manufacturer', 'model', 'detector_type', 'access_group',
-            'camera', 'controller'
-        ]
-        widgets = {
-            'password': forms.PasswordInput(),  # скрытие пароля для RTSP
-            'vpn_password': forms.PasswordInput(),  # скрытие пароля для VPN
-        }
+        verbose_name = "Детектор"
+        verbose_name_plural = "Детекторы"
+    
+    # Основные поля камеры
+    name = models.CharField("Название", max_length=100)
+    map = models.ForeignKey(Map, on_delete=models.CASCADE, related_name="detectors")  # Связь с картой
+    floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name="detectors", blank=True, null=True)  # Связь с этажом (опционально)
+    ip = models.GenericIPAddressField("IP", protocol="both", unpack_ipv4=False)
+    port = models.PositiveIntegerField("Порт")
+    internal_id = models.CharField("Внутренний идентификатор", max_length=100, blank=True, null=True)
+    address = models.CharField("Адрес", max_length=255, blank=True, null=True)
+    web_interface_url = models.URLField("URL веб-интерфейса", blank=True, null=True)
+    serial_number = models.CharField("Серийный номер", max_length=100, blank=True, null=True)
+    
+    # Параметры RTSP подключения
+    rtsp_url = models.CharField("RTSP URL", max_length=255, blank=True, null=True)
+    username = models.CharField("Имя пользователя RTSP", max_length=100, blank=True, null=True)
+    password = models.CharField("Пароль RTSP", max_length=100, blank=True, null=True)
 
-    # Проверка для RTSP URL
-    def clean_rtsp_url(self):
-        rtsp_url = self.cleaned_data.get('rtsp_url')
-        if rtsp_url and not rtsp_url.startswith('rtsp://'):
-            raise forms.ValidationError("RTSP URL должен начинаться с rtsp://")
-        return rtsp_url
+    # Параметры PPTP VPN
+    vpn_server_ip = models.GenericIPAddressField("IP VPN сервера", protocol="both", unpack_ipv4=False, blank=True, null=True)
+    vpn_username = models.CharField("VPN Логин", max_length=100, blank=True, null=True)
+    vpn_password = models.CharField("VPN Пароль", max_length=100, blank=True, null=True)
 
-    # Проверка для IP-адреса
-    def clean_ip(self):
-        ip = self.cleaned_data.get('ip')
-        if not ip:
-            raise forms.ValidationError("IP-адрес обязателен для заполнения.")
-        return ip
+    # Координаты и другие параметры
+    latitude = models.FloatField("Широта")
+    longitude = models.FloatField("Долгота")
+    image_port = models.PositiveIntegerField("Порт изображения", blank=True, null=True)
+    manufacturer = models.CharField("Производитель", max_length=100, blank=True, null=True)
+    model = models.CharField("Модель", max_length=100, default="SmartVision3")
+    detector_type = models.CharField("Тип", max_length=100, blank=True, null=True)
+    access_group = models.CharField("Группа доступа", max_length=100, blank=True, null=True)
+    camera = models.CharField("Камера", max_length=100, blank=True, null=True)
+    controller = models.CharField("Контроллер", max_length=100, blank=True, null=True)
 
-    # Проверка для порта
-    def clean_port(self):
-        port = self.cleaned_data.get('port')
-        if port <= 0 or port > 65535:
-            raise forms.ValidationError("Введите корректный номер порта (от 1 до 65535).")
-        return port
+    # Новые поля для загрузки файлов и комментария
+    media_file = models.FileField("Фото или Видео", upload_to='detector_media/', blank=True, null=True)
+    comment = models.TextField("Комментарий", blank=True, null=True)
 
-    # Проверка для VPN IP-адреса
-    def clean_vpn_server_ip(self):
-        vpn_server_ip = self.cleaned_data.get('vpn_server_ip')
-        if vpn_server_ip and not vpn_server_ip.strip():
-            raise forms.ValidationError("VPN IP не может быть пустым.")
-        return vpn_server_ip
+    def __str__(self) -> str:
+        return f"{self.ip}:{self.port} - {self.internal_id or 'No ID'}"
 
-    # Дополнительная проверка для широты (latitude) и долготы (longitude)
-    def clean_latitude(self):
-        latitude = self.cleaned_data.get('latitude')
-        if latitude and (latitude < -90 or latitude > 90):
-            raise forms.ValidationError("Широта должна быть в диапазоне от -90 до 90.")
-        return latitude
+# Example usage:
+# python3 -m src.monitoring.models.detector
 
-    def clean_longitude(self):
-        longitude = self.cleaned_data.get('longitude')
-        if longitude and (longitude < -180 or longitude > 180):
-            raise forms.ValidationError("Долгота должна быть в диапазоне от -180 до 180.")
-        return longitude
+if __name__ == '__main__':
+    print("This is a model file. To test or interact with it, use Django's shell or admin interface.")

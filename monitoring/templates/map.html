@@ -45,17 +45,6 @@
     <a id="add-camera">Добавить детектор</a>
   </div>
 
-  {% if incidents.exists %}
-    <!-- Нижняя панель (Список инцидентов для этажа) -->
-    <div id="incident-panel">
-      <h4>Список инцидентов:</h4>
-      <ul id="incident-list">
-        {% for incident in incidents.all %}
-          <li>{{ incident.description }} ({{ incident.timestamp }})</li>
-        {% endfor %}
-      </ul>
-    </div>
-  {% endif %}
 {% endblock %}
 
 {% block extra_scripts %}

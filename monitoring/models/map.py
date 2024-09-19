@@ -20,20 +20,3 @@ class Map(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.get_map_type_display()})"
-
-    @property
-    def incidents(self):
-        """
-        Get all incidents related to the detectors on this map.
-        We gather detectors both directly linked to the map and those on the map's floors.
-        """
-        # Directly linked detectors
-        detectors = self.detectors.all()
-
-        # Detectors on the map's floors
-        Detector = apps.get_model('monitoring', 'Detector')
-        floor_detectors = Detector.objects.filter(floor__in=self.floors.all())
-
-        # Combine both sets of detectors and get incidents
-        Incident = apps.get_model('monitoring', 'Incident')
-        return Incident.objects.filter(detector__in=detectors | floor_detectors)

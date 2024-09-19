@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
-from .models import Detector, Incident, Map, Object, Floor
+from .models import Detector, Map, Object, Floor
 
 # Переопределяем заголовок и заголовок страницы администрирования
 admin.site.site_header = "Панель администратора"
@@ -59,15 +59,9 @@ class DetectorAdmin(admin.ModelAdmin):
     search_fields = ('name', 'ip', 'map__name')
     list_filter = ('map',)
 
-# Настройка отображения модели Incident в админке
-class IncidentAdmin(admin.ModelAdmin):
-    list_display = ('detector', 'timestamp', 'description')
-    search_fields = ('detector__name', 'description')
-
 # Регистрация моделей с настройками
 admin.site.register(User, UserAdmin)
 admin.site.register(Object, ObjectAdmin)
 admin.site.register(Map, MapAdmin)
 admin.site.register(Floor, FloorAdmin)
 admin.site.register(Detector, DetectorAdmin)
-admin.site.register(Incident, IncidentAdmin)

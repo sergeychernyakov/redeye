@@ -7,9 +7,9 @@ from .floor import Floor
 
 class Detector(models.Model):
     class Meta:
-        verbose_name = "Детектор"
-        verbose_name_plural = "Детекторы"
-    
+        verbose_name = "Камера"
+        verbose_name_plural = "Камеры"
+
     # Основные поля камеры
     name = models.CharField("Название", max_length=100)
     map = models.ForeignKey(Map, on_delete=models.CASCADE, related_name="detectors")  # Связь с картой
@@ -42,12 +42,9 @@ class Detector(models.Model):
     camera = models.CharField("Камера", max_length=100, blank=True, null=True)
     controller = models.CharField("Контроллер", max_length=100, blank=True, null=True)
 
-    # def clean(self) -> None:
-    #     """
-    #     Проверка: камеры могут быть привязаны только к картам типа "Яндекс".
-    #     """
-    #     if self.map.map_type != 'yandex':
-    #         raise ValidationError("Камеры могут быть привязаны только к картам типа 'Яндекс'.")
+    # Новые поля для загрузки файлов и комментария
+    media_file = models.FileField("Фото или Видео", upload_to='detector_media/', blank=True, null=True)
+    comment = models.TextField("Комментарий", blank=True, null=True)
 
     def __str__(self) -> str:
         return f"{self.ip}:{self.port} - {self.internal_id or 'No ID'}"

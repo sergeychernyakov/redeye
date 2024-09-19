@@ -1,7 +1,7 @@
-# surveye/urls.py
+# redyey/urls.py
 
 """
-URL configuration for surveye project.
+URL configuration for redyey project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/

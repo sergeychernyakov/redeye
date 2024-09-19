@@ -28,12 +28,10 @@ class MapDetailView(DetailView):
             context['floor_image_height'] = floor.image.height
             context['floor'] = floor
             context['detectors_json'] = json.dumps(detectors_data, cls=DjangoJSONEncoder)
-            context['incidents'] = floor.incidents.all()
         else:
             context['floor'] = None
             context['floor_image_url'] = None
             context['detectors_json'] = "[]"
-            context['incidents'] = self.object.incidents.all()
 
         return context
 
