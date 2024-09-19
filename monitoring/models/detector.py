@@ -1,7 +1,6 @@
 # src/monitoring/models/detector.py
 
 from django.db import models
-from django.core.exceptions import ValidationError
 from .map import Map
 from .area import Area
 
@@ -42,7 +41,7 @@ class Detector(models.Model):
     image_port = models.PositiveIntegerField("Порт изображения", blank=True, null=True)
     manufacturer = models.CharField("Производитель", max_length=100, blank=True, null=True)
     model = models.CharField("Модель", max_length=100, default="SmartVision3")
-    detector_type = models.CharField("Тип детектора", max_length=100, choices=DETECTOR_TYPE_CHOICES, default='animal')
+    detector_type = models.CharField("Тип камеры", max_length=100, choices=DETECTOR_TYPE_CHOICES, default='animal')
     access_group = models.CharField("Группа доступа", max_length=100, blank=True, null=True)
     camera = models.CharField("Камера", max_length=100, blank=True, null=True)
     controller = models.CharField("Контроллер", max_length=100, blank=True, null=True)

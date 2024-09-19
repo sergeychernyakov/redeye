@@ -33,6 +33,6 @@ class Area(models.Model):
 
     @property
     def incidents(self):
-        """Получить все инциденты, связанные с детекторами на этом этаже"""
+        """Получить все инциденты, связанные с камерыми на этом этаже"""
         Incident = apps.get_model('monitoring', 'Incident')
         return Incident.objects.filter(detector__in=self.detectors.all()) 

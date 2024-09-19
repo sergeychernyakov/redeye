@@ -48,6 +48,17 @@ class Command(BaseCommand):
             )
             self.stdout.write(self.style.SUCCESS('Суперпользователь Михаил Маркуцин создан'))
 
+        # Создание суперпользователя Михаил Маркуцин
+        if not User.objects.filter(username='markutsin').exists():
+            User.objects.create_superuser(
+                username='test1',
+                email='test1@gmail.com',
+                password='KJLLKJ;l',
+                first_name='Михаил',
+                last_name='Маркуцин'
+            )
+            self.stdout.write(self.style.SUCCESS('Суперпользователь Михаил Маркуцин создан'))
+
     def create_moskvoretsky_park(self):
         # Создание объекта "Москворецкий парк"
         park = Object.objects.create(
@@ -88,7 +99,7 @@ class Command(BaseCommand):
         )
         self.stdout.write(self.style.SUCCESS(f'Схема парка добавлена как подложка для карты {park_map.name}'))
 
-        # Добавляем детекторы краснокнижных животных
+        # Добавляем камеры краснокнижных животных
         self.add_detectors_to_area(area, image_width, image_height, detector_type='animal')
 
     def get_image_size(self, image_path):
@@ -107,13 +118,13 @@ class Command(BaseCommand):
         min_longitude = 0
         max_longitude = image_width   # Ограничение по ширине изображения
 
-        num_detectors = random.randint(3, 10)  # Случайное количество детекторов
+        num_detectors = random.randint(3, 10)  # Случайное количество камер
         for _ in range(num_detectors):
             try:
                 detector = Detector.objects.create(
                     name=f"Детектор {random.randint(1, 1000)}",
                     map=area.map,
-                    area=area,  # Привязка детектора к схеме парка
+                    area=area,  # Привязка камеры к схеме парка
                     ip='192.168.9.161',
                     port=554,
                     rtsp_url='rtsp://admin:campass911@192.168.9.161:554/stream1',
@@ -122,7 +133,7 @@ class Command(BaseCommand):
                     vpn_password='X9eDB@Mxp_',
                     latitude=random.uniform(min_latitude, max_latitude),
                     longitude=random.uniform(min_longitude, max_longitude),
-                    detector_type=detector_type  # Тип детектора (животное или растение)
+                    detector_type=detector_type  # Тип камеры (животное или растение)
                 )
                 detector.save()
 

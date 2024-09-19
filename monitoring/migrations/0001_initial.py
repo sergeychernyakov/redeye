@@ -77,7 +77,7 @@ class Migration(migrations.Migration):
                 ('image_port', models.PositiveIntegerField(blank=True, null=True, verbose_name='Порт изображения')),
                 ('manufacturer', models.CharField(blank=True, max_length=100, null=True, verbose_name='Производитель')),
                 ('model', models.CharField(default='SmartVision3', max_length=100, verbose_name='Модель')),
-                ('detector_type', models.CharField(choices=[('animal', 'Животное'), ('plant', 'Растение')], default='animal', max_length=100, verbose_name='Тип детектора')),
+                ('detector_type', models.CharField(choices=[('animal', 'Животное'), ('plant', 'Растение')], default='animal', max_length=100, verbose_name='Тип камеры')),
                 ('access_group', models.CharField(blank=True, max_length=100, null=True, verbose_name='Группа доступа')),
                 ('camera', models.CharField(blank=True, max_length=100, null=True, verbose_name='Камера')),
                 ('controller', models.CharField(blank=True, max_length=100, null=True, verbose_name='Контроллер')),

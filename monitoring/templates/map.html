@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-  <!-- Правая панель (Создание детектора) -->
+  <!-- Правая панель (Создание камеры) -->
   <div id="detector-panel">
     <!-- Верх панели с закругленным элементом и кнопкой закрытия -->
     <div class="detector-panel-header">
@@ -27,7 +27,7 @@
 
       <div class="detector-header-content">
         <i class="bi bi-broadcast"></i>
-        <span class="separator"> Создание детектора</span>
+        <span class="separator"> Создание камеры</span>
       </div>
     </div>
 
@@ -42,7 +42,7 @@
 
   <!-- Контекстное меню -->
   <div id="context-menu" class="context-menu">
-    <a id="add-camera">Добавить детектор</a>
+    <a id="add-camera">Добавить камеру</a>
   </div>
 
 {% endblock %}
@@ -78,12 +78,12 @@
 
     // Добавить камеру на карту
     addCameraLink.onclick = function () {
-      // Показать панель создания детектора при клике на "Добавить камеру"
+      // Показать панель создания камеры при клике на "Добавить камеру"
       detectorPanel.classList.toggle('show'); // Показать/скрыть панель
 
       if (rightClickCoords && window.activeMap) {
 
-        // Заполняем форму добавления детектора с координатами
+        // Заполняем форму добавления камеры с координатами
         document.getElementById('latitude').value = rightClickCoords.lat;
         document.getElementById('longitude').value = rightClickCoords.lng;
 

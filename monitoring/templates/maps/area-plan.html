@@ -66,8 +66,8 @@
         popupAnchor: [0, -48]
       });
 
-      // Добавляем маркеры для всех детекторов этажа
-      var detectors = {{ detectors_json|safe }};  // Получаем данные детекторов из контекста
+      // Добавляем маркеры для всех камер этажа
+      var detectors = {{ detectors_json|safe }};  // Получаем данные камер из контекста
 
       detectors.forEach(function(detector) {
         var marker = L.marker([detector.latitude, detector.longitude], {icon: cameraIcon}).addTo(mapInstance);

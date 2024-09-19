@@ -1,5 +1,5 @@
 <!-- templates/detectors/form.html -->
-<form method="post" action="{% url 'create_detector' map.id %}">
+<form method="post" action="{% url 'create_detector' map.id %}" enctype="multipart/form-data">
   {% csrf_token %}
 
   <input type="hidden" id="area" name="area" value="{{ area.id }}">
@@ -11,9 +11,9 @@
       </div>
   {% endif %}
 
-  <!-- Имя детектора -->
+  <!-- Имя камеры -->
   <div class="form-group">
-    <label for="name">Название детектора:</label>
+    <label for="name">Название камеры:</label>
     <input type="text" class="form-control" id="name" name="name" value="{{ form.name.value }}" required>
     <!-- Ошибки для поля 'name' -->
     {% if form.name.errors %}
@@ -23,6 +23,46 @@
     {% endif %}
   </div>
   
+  <!-- Поле для комментария -->
+  <div class="form-group">
+    <label for="comment">Комментарий:</label>
+    <textarea class="form-control" id="comment" name="comment" placeholder="Введите комментарий">{{ form.comment.value }}</textarea>
+    <!-- Ошибки для поля 'comment' -->
+    {% if form.comment.errors %}
+      <div class="text-danger">
+        {{ form.comment.errors }}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Поле для загрузки фото или видео -->
+  <div class="form-group">
+    <label for="media-file">Загрузить фото или видео:</label>
+    <input type="file" class="form-control-file" id="media-file" name="media_file">
+    <!-- Ошибки для поля 'media_file' -->
+    {% if form.media_file.errors %}
+      <div class="text-danger">
+        {{ form.media_file.errors }}
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Поле для выбора типа камеры (животное/растение) -->
+  <div class="form-group">
+    <label for="detector-type">Тип камеры:</label>
+    <select class="form-control" id="detector-type" name="detector_type" required>
+      <option value="">Выберите тип</option>
+      <option value="animal" {% if form.detector_type.value == 'animal' %}selected{% endif %}>Животное</option>
+      <option value="plant" {% if form.detector_type.value == 'plant' %}selected{% endif %}>Растение</option>
+    </select>
+    <!-- Ошибки для поля 'detector_type' -->
+    {% if form.detector_type.errors %}
+      <div class="text-danger">
+        {{ form.detector_type.errors }}
+      </div>
+    {% endif %}
+  </div>
+
   <!-- RTSP URL -->
   <div class="form-group">
     <label for="rtsp-url">RTSP URL:</label>
@@ -72,7 +112,7 @@
   <!-- Автозаполненные поля (IP-адрес и порт) -->
   <div class="form-group">
     <label for="ip">IP (*):</label>
-    <input type="text" class="form-control" id="ip" name="ip" placeholder="IP-адрес детектора" value="{{ form.ip.value }}" required readonly>
+    <input type="text" class="form-control" id="ip" name="ip" placeholder="IP-адрес камеры" value="{{ form.ip.value }}" required readonly>
     <!-- Ошибки для поля 'ip' -->
     {% if form.ip.errors %}
       <div class="text-danger">
@@ -83,7 +123,7 @@
 
   <div class="form-group">
     <label for="port">Порт (*):</label>
-    <input type="text" class="form-control" id="port" name="port" placeholder="Порт детектора" value="{{ form.port.value }}" required readonly>
+    <input type="text" class="form-control" id="port" name="port" placeholder="Порт камеры" value="{{ form.port.value }}" required readonly>
     <!-- Ошибки для поля 'port' -->
     {% if form.port.errors %}
       <div class="text-danger">
@@ -112,6 +152,39 @@
       {% if form.longitude.errors %}
         <div class="text-danger">
           {{ form.longitude.errors }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <label for="manufacturer">Производитель:</label>
+      <select class="form-control" id="manufacturer" name="manufacturer">
+        <option value="">Не выбран</option>
+        <option value="SmartVision3" {% if form.manufacturer.value == 'SmartVision3' %}selected{% endif %}>SmartVision3</option>
+        <option value="Axis" {% if form.manufacturer.value == 'Axis' %}selected{% endif %}>Axis</option>
+        <option value="Hikvision" {% if form.manufacturer.value == 'Hikvision' %}selected{% endif %}>Hikvision</option>
+        <option value="Dahua" {% if form.manufacturer.value == 'Dahua' %}selected{% endif %}>Dahua</option>
+      </select>
+      <!-- Ошибки для поля 'manufacturer' -->
+      {% if form.manufacturer.errors %}
+        <div class="text-danger">
+          {{ form.manufacturer.errors }}
+        </div>
+      {% endif %}
+    </div>
+    
+    <div class="form-group">
+      <label for="model">Модель:</label>
+      <select class="form-control" id="model" name="model">
+        <option value="SmartVision3" {% if form.model.value == 'SmartVision3' %}selected{% endif %}>SmartVision3</option>
+        <option value="Axis P1365" {% if form.model.value == 'Axis P1365' %}selected{% endif %}>Axis P1365</option>
+        <option value="Hikvision DS-2CD2143G0" {% if form.model.value == 'Hikvision DS-2CD2143G0' %}selected{% endif %}>Hikvision DS-2CD2143G0</option>
+        <option value="Dahua IPC-HDW4431C-A" {% if form.model.value == 'Dahua IPC-HDW4431C-A' %}selected{% endif %}>Dahua IPC-HDW4431C-A</option>
+      </select>
+      <!-- Ошибки для поля 'model' -->
+      {% if form.model.errors %}
+        <div class="text-danger">
+          {{ form.model.errors }}
         </div>
       {% endif %}
     </div>

@@ -1,140 +1,60 @@
-# src/monitoring/management/commands/seeder.py
+# src/monitoring/models/detector.py
 
-import os
-import shutil
-from django.conf import settings
-from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
-from monitoring.models import Object, Map, Area, Detector
-import random
-from PIL import Image  # Подключаем Pillow для работы с изображениями
-from faker import Faker
-import logging
+from django.db import models
+from .map import Map
+from .area import Area
 
-class Command(BaseCommand):
-    help = 'Seed the database with initial data'
+class Detector(models.Model):
+    class Meta:
+        verbose_name = "Камера"
+        verbose_name_plural = "Камеры"
 
-    def handle(self, *args, **kwargs):
-        self.faker = Faker('ru_RU')  # Russian humor!
+    DETECTOR_TYPE_CHOICES = [
+        ('animal', 'Животное'),
+        ('plant', 'Растение')
+    ]
 
-        # 1. Создание суперпользователей
-        self.create_superusers()
+    # Основные поля камеры
+    name = models.CharField("Название", max_length=100)
+    map = models.ForeignKey(Map, on_delete=models.CASCADE, related_name="detectors")  # Связь с картой
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="detectors", blank=True, null=True)  # Связь с участком (опционально)
+    ip = models.GenericIPAddressField("IP", protocol="both", unpack_ipv4=False)
+    port = models.PositiveIntegerField("Порт")
+    internal_id = models.CharField("Внутренний идентификатор", max_length=100, blank=True, null=True)
+    address = models.CharField("Адрес", max_length=255, blank=True, null=True)
+    web_interface_url = models.URLField("URL веб-интерфейса", blank=True, null=True)
+    serial_number = models.CharField("Серийный номер", max_length=100, blank=True, null=True)
+    
+    # Параметры RTSP подключения
+    rtsp_url = models.CharField("RTSP URL", max_length=255, blank=True, null=True)
+    username = models.CharField("Имя пользователя RTSP", max_length=100, blank=True, null=True)
+    password = models.CharField("Пароль RTSP", max_length=100, blank=True, null=True)
 
-        # 2. Создание объекта "Москворецкий парк"
-        self.create_moskvoretsky_park()
+    # Параметры PPTP VPN
+    vpn_server_ip = models.GenericIPAddressField("IP VPN сервера", protocol="both", unpack_ipv4=False, blank=True, null=True)
+    vpn_username = models.CharField("VPN Логин", max_length=100, blank=True, null=True)
+    vpn_password = models.CharField("VPN Пароль", max_length=100, blank=True, null=True)
 
-        self.stdout.write(self.style.SUCCESS(f'Данные успешно загружены'))
+    # Координаты и другие параметры
+    latitude = models.FloatField("Широта")
+    longitude = models.FloatField("Долгота")
+    image_port = models.PositiveIntegerField("Порт изображения", blank=True, null=True)
+    manufacturer = models.CharField("Производитель", max_length=100, blank=True, null=True)
+    model = models.CharField("Модель", max_length=100, default="SmartVision3")
+    detector_type = models.CharField("Тип камеры", max_length=100, choices=DETECTOR_TYPE_CHOICES, default='animal')
+    access_group = models.CharField("Группа доступа", max_length=100, blank=True, null=True)
+    camera = models.CharField("Камера", max_length=100, blank=True, null=True)
+    controller = models.CharField("Контроллер", max_length=100, blank=True, null=True)
 
-    def create_superusers(self):
-        # Создание суперпользователя Сергей Черняков
-        if not User.objects.filter(username='sergeychernyakov').exists():
-            User.objects.create_superuser(
-                username='sergeychernyakov',
-                email='chernyakov.sergey@gmail.com',
-                password='JKLkjhlI9;sss',
-                first_name='Сергей',
-                last_name='Черняков'
-            )
-            self.stdout.write(self.style.SUCCESS('Суперпользователь Сергей Черняков создан'))
+    # Новые поля для загрузки файлов и комментария
+    media_file = models.FileField("Фото или Видео", upload_to='detector_media/', blank=True, null=True)
+    comment = models.TextField("Комментарий", blank=True, null=True)
 
-        # Создание суперпользователя Михаил Маркуцин
-        if not User.objects.filter(username='markutsin').exists():
-            User.objects.create_superuser(
-                username='markutsin',
-                email='markutsin@gmail.com',
-                password='HKPJk999;qq',
-                first_name='Михаил',
-                last_name='Маркуцин'
-            )
-            self.stdout.write(self.style.SUCCESS('Суперпользователь Михаил Маркуцин создан'))
-
-    def create_moskvoretsky_park(self):
-        # Создание объекта "Москворецкий парк"
-        park = Object.objects.create(
-            name="Москворецкий парк",
-            address="Москва, Россия",
-            description="Национальный парк с краснокнижными видами растений и животных",
-            latitude=55.7412,
-            longitude=37.6163
-        )
-        self.stdout.write(self.style.SUCCESS(f'Объект {park.name} создан'))
-
-        # Создание карты подложки "Москворецкий парк"
-        park_map = Map.objects.create(
-            name="Москворецкий парк",
-            map_type="underlay",  # Тип карты подложка
-            object=park
-        )
-        self.stdout.write(self.style.SUCCESS(f'Карта подложка {park_map.name} создана'))
-
-        # Путь к изображению схемы парка
-        park_image = 'monitoring/static/img/area-plan.jpeg'
-
-        # Определяем путь к изображению в папке media
-        media_image_path = os.path.join(settings.MEDIA_ROOT, f'maps/{park_map.id}/areas/{os.path.basename(park_image)}')
-
-        image_width, image_height = self.get_image_size(park_image)
-
-        # Копируем изображение из static в media
-        os.makedirs(os.path.dirname(media_image_path), exist_ok=True)
-        shutil.copyfile(park_image, media_image_path)
-
-        # Создание подложки (схемы парка)
-        area = Area.objects.create(
-            map=park_map,
-            image=f'maps/{park_map.id}/areas/{os.path.basename(park_image)}',
-            order=1,
-            background_color="#A0D6B4"  # Зеленый цвет фона для парка
-        )
-        self.stdout.write(self.style.SUCCESS(f'Схема парка добавлена как подложка для карты {park_map.name}'))
-
-        # Добавляем детекторы краснокнижных животных
-        self.add_detectors_to_area(area, image_width, image_height, detector_type='animal')
-
-    def get_image_size(self, image_path):
-        """Получаем ширину и высоту изображения."""
-        try:
-            with Image.open(image_path) as img:
-                return img.width, img.height
-        except Exception as e:
-            self.stdout.write(self.style.ERROR(f"Ошибка при получении размера изображения: {e}"))
-            return 1000, 800  # Значения по умолчанию, если что-то пошло не так
-
-    def add_detectors_to_area(self, area, image_width, image_height, detector_type='animal'):
-        # Задаем минимальные и максимальные значения для координат (широта и долгота)
-        min_latitude = 0
-        max_latitude = image_height  # Ограничение по высоте изображения
-        min_longitude = 0
-        max_longitude = image_width   # Ограничение по ширине изображения
-
-        num_detectors = random.randint(3, 10)  # Случайное количество детекторов
-        for _ in range(num_detectors):
-            try:
-                detector = Detector.objects.create(
-                    name=f"Детектор {random.randint(1, 1000)}",
-                    map=area.map,
-                    area=area,  # Привязка детектора к схеме парка
-                    ip='192.168.9.161',
-                    port=554,
-                    rtsp_url='rtsp://admin:campass911@192.168.9.161:554/stream1',
-                    vpn_server_ip='178.209.97.254',
-                    vpn_username='argo1',
-                    vpn_password='X9eDB@Mxp_',
-                    latitude=random.uniform(min_latitude, max_latitude),
-                    longitude=random.uniform(min_longitude, max_longitude),
-                    detector_type=detector_type  # Тип детектора (животное или растение)
-                )
-                detector.save()
-
-                # Log detector creation
-                logging.info(f"Created detector {detector.name} on area {area.order}")
-
-            except Exception as e:
-                # Log any errors during detector creation
-                logging.error(f"Error creating detector on area {area.order}: {e}")
+    def __str__(self) -> str:
+        return f"{self.ip}:{self.port} - {self.internal_id or 'No ID'}"
 
 # Example usage:
-# python3 -m src.monitoring.management.commands.seeder
+# python3 -m src.monitoring.models.detector
 
 if __name__ == '__main__':
-    print("This is a management command for seeding the database. Use it with `python manage.py seeder`.")
+    print("This is a model file. To test or interact with it, use Django's shell or admin interface.")
