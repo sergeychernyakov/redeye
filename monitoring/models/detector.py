@@ -1,4 +1,4 @@
-# monitoring/models/detector.py
+# src/monitoring/models/detector.py
 
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -10,10 +10,15 @@ class Detector(models.Model):
         verbose_name = "Камера"
         verbose_name_plural = "Камеры"
 
+    DETECTOR_TYPE_CHOICES = [
+        ('animal', 'Животное'),
+        ('plant', 'Растение')
+    ]
+
     # Основные поля камеры
     name = models.CharField("Название", max_length=100)
     map = models.ForeignKey(Map, on_delete=models.CASCADE, related_name="detectors")  # Связь с картой
-    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="detectors", blank=True, null=True)  # Связь с этажом (опционально)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="detectors", blank=True, null=True)  # Связь с участком (опционально)
     ip = models.GenericIPAddressField("IP", protocol="both", unpack_ipv4=False)
     port = models.PositiveIntegerField("Порт")
     internal_id = models.CharField("Внутренний идентификатор", max_length=100, blank=True, null=True)
@@ -37,7 +42,7 @@ class Detector(models.Model):
     image_port = models.PositiveIntegerField("Порт изображения", blank=True, null=True)
     manufacturer = models.CharField("Производитель", max_length=100, blank=True, null=True)
     model = models.CharField("Модель", max_length=100, default="SmartVision3")
-    detector_type = models.CharField("Тип", max_length=100, blank=True, null=True)
+    detector_type = models.CharField("Тип детектора", max_length=100, choices=DETECTOR_TYPE_CHOICES, default='animal')
     access_group = models.CharField("Группа доступа", max_length=100, blank=True, null=True)
     camera = models.CharField("Камера", max_length=100, blank=True, null=True)
     controller = models.CharField("Контроллер", max_length=100, blank=True, null=True)

@@ -1,4 +1,4 @@
-# monitoring/management/commands/seeder.py
+# src/monitoring/management/commands/seeder.py
 
 import os
 import shutil
@@ -8,7 +8,6 @@ from django.contrib.auth.models import User
 from monitoring.models import Object, Map, Area, Detector
 import random
 from PIL import Image  # Подключаем Pillow для работы с изображениями
-from django.utils import timezone
 from faker import Faker
 import logging
 
@@ -18,14 +17,11 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.faker = Faker('ru_RU')  # Russian humor!
 
-        # 1. Создание двух суперпользователей
+        # 1. Создание суперпользователей
         self.create_superusers()
 
-        # 2. Создание 20 обычных пользователей (сотрудников)
-        self.create_employees()
-
-        # 3. Создание объекта "Торговый центр Кловер"
-        self.create_clover_mall()
+        # 2. Создание объекта "Москворецкий парк"
+        self.create_moskvoretsky_park()
 
         self.stdout.write(self.style.SUCCESS(f'Данные успешно загружены'))
 
@@ -52,82 +48,48 @@ class Command(BaseCommand):
             )
             self.stdout.write(self.style.SUCCESS('Суперпользователь Михаил Маркуцин создан'))
 
-    def create_employees(self):
-        # Юмористические имена пользователей
-        funny_names = [
-            "Василий Полуночник", "Ольга Шумахер", "Евгений Трудоголик", "Мария Знайка",
-            "Петр Весельчак", "Анна Рокстар", "Георгий Тормозов", "Людмила Дрифт", 
-            "Иван Грозный", "Татьяна Громова", "Алексей Безумный", "Дарья Пирожкова",
-            "Максим Безопасный", "Наталья Храбрая", "Семен Ленивый", "Екатерина Буря",
-            "Федор Счастливый", "Николай Шумный", "Юлия Молниеносная", "Светлана Загадочная"
-        ]
-
-        # Создание 20 обычных пользователей (сотрудников) без права логина
-        for name in funny_names:
-            first_name, last_name = name.split()
-            username = f'employee_{random.randint(1000, 9999)}'
-            email = f'{username}@company.com'
-
-            user = User.objects.create(
-                is_staff=False,
-                is_superuser=False,
-                is_active=False,  # Без права логина
-                username=username,
-                email=email,
-                first_name=first_name,
-                last_name=last_name,
-                last_login=None,
-            )
-
-        self.stdout.write(self.style.SUCCESS('20 сотрудников созданы и добавлены в группу'))
-
-    def create_clover_mall(self):
-        # Создание объекта "Торговый центр Кловер"
-        mall = Object.objects.create(
-            name="Торговый центр Кловер",
-            address="г. Калининград, пл. Победы, д.10",
-            description="Огромный торговый центр с множеством этажей и магазинов",
-            latitude=54.7104,
-            longitude=20.4522
+    def create_moskvoretsky_park(self):
+        # Создание объекта "Москворецкий парк"
+        park = Object.objects.create(
+            name="Москворецкий парк",
+            address="Москва, Россия",
+            description="Национальный парк с краснокнижными видами растений и животных",
+            latitude=55.7412,
+            longitude=37.6163
         )
-        self.stdout.write(self.style.SUCCESS(f'Объект {mall.name} создан'))
+        self.stdout.write(self.style.SUCCESS(f'Объект {park.name} создан'))
 
-        # Создание карты "Торговый центр"
-        mall_map = Map.objects.create(
-            name="Торговый центр",
-            map_type="underlay",
-            object=mall
+        # Создание карты подложки "Москворецкий парк"
+        park_map = Map.objects.create(
+            name="Москворецкий парк",
+            map_type="underlay",  # Тип карты подложка
+            object=park
         )
-        self.stdout.write(self.style.SUCCESS(f'Карта {mall_map.name} создана'))
+        self.stdout.write(self.style.SUCCESS(f'Карта подложка {park_map.name} создана'))
 
-        # Пути к изображениям этажей
-        areas_images = [
-            'monitoring/static/img/clover-first-area-plan.png',
-            'monitoring/static/img/clover-second-area-plan.png',
-            'monitoring/static/img/clover-third-area-plan.png',
-        ]
+        # Путь к изображению схемы парка
+        park_image = 'monitoring/static/img/area-plan.jpeg'
 
-        for i, area_image in enumerate(areas_images, start=1):
-            # Определяем путь к изображению в папке media
-            media_image_path = os.path.join(settings.MEDIA_ROOT, f'maps/{mall_map.id}/areas/{os.path.basename(area_image)}')
-            
-            image_width, image_height = self.get_image_size(area_image)
+        # Определяем путь к изображению в папке media
+        media_image_path = os.path.join(settings.MEDIA_ROOT, f'maps/{park_map.id}/areas/{os.path.basename(park_image)}')
 
-            # Копируем изображение из static в media
-            os.makedirs(os.path.dirname(media_image_path), exist_ok=True)
-            shutil.copyfile(area_image, media_image_path)
+        image_width, image_height = self.get_image_size(park_image)
 
-            # Создание этажа
-            area = Area.objects.create(
-                map=mall_map,
-                image=f'maps/{mall_map.id}/areas/{os.path.basename(area_image)}',
-                order=i,
-                background_color="#F5F6FA"
-            )
-            # Добавляем 3-10 детекторов на каждый этаж
-            self.add_detectors_to_area(area, image_width, image_height)
-            
-            self.stdout.write(self.style.SUCCESS(f'Этаж {i} добавлен для карты {mall_map.name}'))
+        # Копируем изображение из static в media
+        os.makedirs(os.path.dirname(media_image_path), exist_ok=True)
+        shutil.copyfile(park_image, media_image_path)
+
+        # Создание подложки (схемы парка)
+        area = Area.objects.create(
+            map=park_map,
+            image=f'maps/{park_map.id}/areas/{os.path.basename(park_image)}',
+            order=1,
+            background_color="#FFFFFF"  # Зеленый цвет фона для парка
+        )
+        self.stdout.write(self.style.SUCCESS(f'Схема парка добавлена как подложка для карты {park_map.name}'))
+
+        # Добавляем детекторы краснокнижных животных
+        self.add_detectors_to_area(area, image_width, image_height, detector_type='animal')
 
     def get_image_size(self, image_path):
         """Получаем ширину и высоту изображения."""
@@ -138,7 +100,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"Ошибка при получении размера изображения: {e}"))
             return 1000, 800  # Значения по умолчанию, если что-то пошло не так
 
-    def add_detectors_to_area(self, area, image_width, image_height):
+    def add_detectors_to_area(self, area, image_width, image_height, detector_type='animal'):
         # Задаем минимальные и максимальные значения для координат (широта и долгота)
         min_latitude = 0
         max_latitude = image_height  # Ограничение по высоте изображения
@@ -151,7 +113,7 @@ class Command(BaseCommand):
                 detector = Detector.objects.create(
                     name=f"Детектор {random.randint(1, 1000)}",
                     map=area.map,
-                    area=area,  # Привязка детектора к этажу
+                    area=area,  # Привязка детектора к схеме парка
                     ip='192.168.9.161',
                     port=554,
                     rtsp_url='rtsp://admin:campass911@192.168.9.161:554/stream1',
@@ -159,7 +121,8 @@ class Command(BaseCommand):
                     vpn_username='argo1',
                     vpn_password='X9eDB@Mxp_',
                     latitude=random.uniform(min_latitude, max_latitude),
-                    longitude=random.uniform(min_longitude, max_longitude)
+                    longitude=random.uniform(min_longitude, max_longitude),
+                    detector_type=detector_type  # Тип детектора (животное или растение)
                 )
                 detector.save()
 
@@ -170,3 +133,8 @@ class Command(BaseCommand):
                 # Log any errors during detector creation
                 logging.error(f"Error creating detector on area {area.order}: {e}")
 
+# Example usage:
+# python3 -m src.monitoring.management.commands.seeder
+
+if __name__ == '__main__':
+    print("This is a management command for seeding the database. Use it with `python manage.py seeder`.")
