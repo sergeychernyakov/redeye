@@ -1,0 +1,17 @@
+<!-- templates/detectors/show.html -->
+<h1>Детектор: {{ detector.name }}</h1>
+
+<p><strong>IP:</strong> {{ detector.ip }}</p>
+<p><strong>Порт:</strong> {{ detector.port }}</p>
+<p><strong>RTSP URL:</strong> {{ detector.rtsp_url }}</p>
+
+<!-- Видеопоток -->
+{% if detector.rtsp_url %}
+  <h2>Видеопоток с камеры:</h2>
+  <video controls width="100%">
+    <source src="{{ detector.rtsp_url }}" type="application/x-rtsp">
+    Ваш браузер не поддерживает отображение видеопотока.
+  </video>
+{% else %}
+  <p>Видеопоток недоступен.</p>
+{% endif %}

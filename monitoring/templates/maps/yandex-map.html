@@ -1,0 +1,51 @@
+<!-- monitoring/templates/maps/yandex-map.html -->
+
+{% extends '../map.html' %}
+{% load static %}
+
+{% block title %}
+Яндекс карта
+{% endblock %}
+
+{% block initialisation_map_scripts %}
+  <script src="https://api-maps.yandex.ru/2.1/?apikey={{ YANDEX_API_KEY }}&lang=ru_RU" type="text/javascript"></script>
+  <script src="{% static 'vendors/leaflet-plugins/js/yandex.js' %}"></script>
+  <script>
+    // Инициализация Яндекс карты
+    ymaps.ready(function () {
+      var mapInstance = L.map('map-container').setView([54.7073, 20.5073], 12);  // Координаты Калининграда
+      var yandexLayer = new L.Yandex();
+      mapInstance.addLayer(yandexLayer);
+
+      // Устанавливаем глобальную ссылку на карту для доступа в других скриптах
+      window.activeMap = mapInstance;
+
+      var cameraIcon = createCameraIcon(36);  // Размер иконки по умолчанию
+
+      // Пример координат для камеры на Яндекс карте
+      var cameraLat = 54.7073;
+      var cameraLng = 20.5073;
+
+      var cameraMarker = L.marker([cameraLat, cameraLng], {icon: cameraIcon}).addTo(mapInstance).bindPopup('Камера наблюдения');
+
+      // Функция для создания иконки камеры
+      function createCameraIcon(size) {
+        return L.icon({
+          iconUrl: '{% static "img/camera-icon.png" %}',
+          iconSize: [size, size],
+          iconAnchor: [size / 2, size],
+          popupAnchor: [0, -size / 2]
+        });
+      }
+
+      // Пересоздаем иконку камеры при изменении масштаба карты
+      mapInstance.on('zoomend', function () {
+        var currentZoom = mapInstance.getZoom();
+        var newSize = 36 + (currentZoom - 12) * 3;  // Увеличиваем размер с увеличением зума
+        cameraMarker.setIcon(createCameraIcon(newSize));
+      });
+
+      initializeContextMenu();
+    });
+  </script>
+{% endblock %}

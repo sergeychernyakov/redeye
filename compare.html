@@ -1,0 +1,78 @@
+{% extends '../map.html' %}
+{% load static %}
+
+{% block title %}
+План этажа - {{ map.name }}
+{% endblock %}
+
+{% block extra_styles %}
+  {{ block.super }}
+  <style>
+    /* Стиль для белого фона карты */
+    #map-container {
+      background-color: {{ floor.background_color|default:"#FFFFFF" }};
+    }
+  </style>
+{% endblock %}
+
+{% block initialisation_map_scripts %}
+  <script>
+    // Проверяем, есть ли изображение этажа
+    {% if floor_image_url %}
+      // Получаем размеры изображения из контекста
+      var imageWidth = {{ floor_image_width }};
+      var imageHeight = {{ floor_image_height }};
+
+      // Координаты для изображения
+      var imageBounds = [[0, 0], [imageHeight, imageWidth]];
+
+      // Инициализация карты
+      var mapInstance = L.map('map-container', {
+        crs: L.CRS.Simple,
+        maxZoom: 2,
+        minZoom: -2,
+        zoomSnap: 0.1,
+        zoomDelta: 0.1
+      });
+
+      // Сохраняем ссылку на карту
+      window.activeMap = mapInstance;
+
+      // Добавляем изображение плана этажа на карту
+      L.imageOverlay('{{ floor_image_url }}', imageBounds).addTo(mapInstance);
+      mapInstance.setMaxBounds(imageBounds);
+
+      // Рассчитываем начальный зум, основываясь на размере контейнера и изображения
+      var mapContainer = document.getElementById('map-container');
+      var containerWidth = mapContainer.offsetWidth;
+      var containerHeight = mapContainer.offsetHeight;
+
+      var zoomX = Math.log2(containerWidth / imageWidth);
+      var zoomY = Math.log2(containerHeight / imageHeight);
+
+      var initialZoom = Math.min(zoomX, zoomY);
+      mapInstance.setView([imageHeight / 2, imageWidth / 2], initialZoom);
+
+      // Настраиваем иконку камеры
+      var cameraIcon = L.icon({
+        iconUrl: '{% static "img/camera-icon.png" %}',
+        iconSize: [48, 48],
+        iconAnchor: [24, 48],
+        popupAnchor: [0, -48]
+      });
+
+      // Добавляем маркеры для всех детекторов этажа
+      var detectors = {{ detectors_json|safe }};  // Получаем данные детекторов из контекста
+      
+      detectors.forEach(function(detector) {
+        var marker = L.marker([detector.latitude, detector.longitude], {icon: cameraIcon}).addTo(mapInstance);
+        marker.bindPopup('<b>' + detector.name + '</b>');
+      });
+
+      // Инициализируем контекстное меню
+      initializeContextMenu();
+    {% else %}
+      console.error('Изображение этажа не найдено.');
+    {% endif %}
+  </script>
+{% endblock %}

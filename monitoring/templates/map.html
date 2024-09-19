@@ -1,0 +1,127 @@
+<!-- monitoring/templates/map.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Карта - {{ map.name }} ({{ map.get_map_type_display }})
+{% endblock %}
+
+{% block extra_styles %}
+  <link rel="stylesheet" href="{% static 'vendors/leaflet/css/leaflet.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/map.css' %}" />
+{% endblock %}
+
+{% block content %}
+  <!-- Правая панель (Создание детектора) -->
+  <div id="detector-panel">
+    <!-- Верх панели с закругленным элементом и кнопкой закрытия -->
+    <div class="detector-panel-header">
+      <!-- Элемент в виде четверти круга с крестиком внутри -->
+      <div class="quarter-circle">
+          <div class="close-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" id="close-detector-panel">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </div>
+      </div>
+
+      <div class="detector-header-content">
+        <i class="bi bi-broadcast"></i>
+        <span class="separator"> Создание детектора</span>
+      </div>
+    </div>
+
+    <!-- Форма с прокруткой -->
+    <div class="detector-panel-body">
+      {% include 'detectors/form.html' %}
+    </div>
+  </div>
+
+  <!-- Карта -->
+  <div id="map-container"></div>
+
+  <!-- Контекстное меню -->
+  <div id="context-menu" class="context-menu">
+    <a id="add-camera">Добавить детектор</a>
+  </div>
+
+  {% if incidents.exists %}
+    <!-- Нижняя панель (Список инцидентов для этажа) -->
+    <div id="incident-panel">
+      <h4>Список инцидентов:</h4>
+      <ul id="incident-list">
+        {% for incident in incidents.all %}
+          <li>{{ incident.description }} ({{ incident.timestamp }})</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{% static 'vendors/leaflet/js/leaflet.js' %}"></script>
+
+  <script>
+    var contextMenu = document.getElementById('context-menu');
+    var addCameraLink = document.getElementById('add-camera');
+    var detectorPanel = document.getElementById('detector-panel');
+    var closeDetectorPanelButton = document.getElementById('close-detector-panel');
+    var rightClickCoords = null;
+
+    // Закрытие панели по клику на крестик
+    closeDetectorPanelButton.addEventListener('click', function() {
+      detectorPanel.classList.remove('show');
+    });
+
+    // Закрываем контекстное меню при клике в любом месте
+    function closeContextMenu() {
+      contextMenu.style.display = 'none';
+    }
+
+    // Показать контекстное меню при правом клике
+    function openContextMenu(e) {
+      rightClickCoords = e.latlng;
+      contextMenu.style.left = e.originalEvent.pageX + 'px';
+      contextMenu.style.top = e.originalEvent.pageY + 'px';
+      contextMenu.style.display = 'block';
+      e.originalEvent.preventDefault(); // Предотвращаем стандартное контекстное меню
+    }
+
+    // Добавить камеру на карту
+    addCameraLink.onclick = function () {
+      // Показать панель создания детектора при клике на "Добавить камеру"
+      detectorPanel.classList.toggle('show'); // Показать/скрыть панель
+
+      if (rightClickCoords && window.activeMap) {
+
+        // Заполняем форму добавления детектора с координатами
+        document.getElementById('latitude').value = rightClickCoords.lat;
+        document.getElementById('longitude').value = rightClickCoords.lng;
+
+        closeContextMenu();
+      }
+    };
+
+    // Функция инициализации контекстного меню
+    function initializeContextMenu() {
+      if (window.activeMap) {
+        // Обработчик правого клика на карте (контекстное меню)
+        window.activeMap.on('contextmenu', openContextMenu);
+
+        // Закрываем контекстное меню при клике на карте
+        window.activeMap.on('click', closeContextMenu);
+      } else {
+        console.error('Карта не инициализирована.');
+      }
+    }
+
+    // Закрываем контекстное меню при клике вне его
+    document.addEventListener('click', function(event) {
+      if (!contextMenu.contains(event.target)) {
+        closeContextMenu();
+      }
+    });
+
+  </script>
+  {% block initialisation_map_scripts %}{% endblock %}
+{% endblock %}

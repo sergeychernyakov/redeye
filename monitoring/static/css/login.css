@@ -1,0 +1,47 @@
+/* monitoring/static/css/login.css */
+
+/* Убираем стили для body */
+body {
+  background-color: #f0f2f5;
+  margin: 0;
+  padding: 0;
+}
+
+/* Центрируем только контейнер формы логина */
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin: 50px auto; /* Центрируем контейнер логина горизонтально и добавляем отступ сверху */
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-control {
+  margin-bottom: 15px;
+  padding: 10px;
+}
+
+.btn {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}

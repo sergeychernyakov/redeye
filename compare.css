@@ -1,0 +1,128 @@
+/* monitoring/static/css/map.css */
+
+#map-container {
+  flex-grow: 1;
+  height: calc(100vh - 160px);
+}
+
+.context-menu {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  z-index: 1000;
+  display: none;
+}
+
+.context-menu a {
+  cursor: pointer;
+  color: #000;
+  text-decoration: none;
+}
+
+.context-menu a:hover {
+  background-color: #f0f0f0;
+}
+
+#detector-panel {
+  width: 400px;
+  background-color: #f4f4f4;
+  position: fixed;
+  right: 0;
+  top: 50px; /* Отступ для верхнего меню */
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Добавляем прокрутку по вертикали */
+  z-index: 1001;
+}
+
+#detector-panel.show, #detector-panel.show .quarter-circle  {
+  transform: translateX(0);
+}
+
+/* Верхняя панель с закругленным элементом */
+.detector-panel-header {
+  background-color: #f8f8f8;
+  display: flex;
+  align-items: center; /* Выравнивание содержимого по вертикали */
+  padding: 15px 20px;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  position: relative;
+  border-top-right-radius: 30px;
+}
+
+/* Элемент в виде четверти круга */
+.quarter-circle {
+  position: absolute;
+  bottom: 0;
+  left: -35px;
+  width: 70px;
+  height: 56px;
+  background-color: #f8f8f8;
+  border-bottom-left-radius: 30px; /* Четверть круга */
+  border-bottom: 1px solid #ddd;
+  z-index: 10; /* Поднимаем элемент над остальным контентом */
+  display: flex;
+  align-items: center;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.quarter-circle .close-button {
+  cursor: pointer;
+  padding-left: 15px;
+}
+
+.quarter-circle .close-button i {
+  font-size: 15px;
+  color: #333;
+}
+
+.detector-header-content {
+  display: flex;
+  z-index: 11;
+  padding-top: 2px;
+}
+
+.detector-header-content .bi-broadcast {
+  padding-right: 10px;
+}
+
+.close-button {
+  cursor: pointer;
+}
+
+.close-button svg {
+  width: 18x; /* Размер иконки */
+  height: 18px; /* Размер иконки */
+  stroke-width: 3; /* Толщина линии */
+  cursor: pointer;
+  color: #333;
+
+}
+
+/* Тело панели с прокруткой */
+.detector-panel-body {
+  padding: 10px;
+  flex-grow: 1;
+  overflow-y: auto; /* Обеспечиваем прокрутку */
+  max-height: calc(100vh - 200px); /* Убедимся, что панель корректно прокручивается */
+}
+
+#incident-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+  background-color: #f8f8f8;
+  padding: 10px;
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+.leaflet-control-attribution {
+  display: none;
+}

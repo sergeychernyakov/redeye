@@ -1,0 +1,108 @@
+/* monitoring/static/css/style.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+}
+
+#top-menu {
+  display: flex;
+  justify-content: flex-start; /* Выровнять все элементы по левому краю */
+  align-items: center;
+  background-color: #f8f8f8;
+  padding: 10px 20px; /* Отступы сверху и снизу: 10px, слева и справа: 20px */
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.menu-toggle, .home, .layers {
+  margin-right: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.menu-toggle i, .home i {
+  font-size: 18px; /* Размер иконки Bootstrap */
+  margin-right: 5px;
+}
+
+.separator {
+  margin: 0 10px;
+  font-weight: bold;
+}
+
+/* Устанавливаем черный цвет для ссылки "Основы" и убираем синий фокус */
+.layers .dropdown-toggle {
+  color: black;
+  text-decoration: none; /* Убираем подчеркивание */
+  padding-bottom: 20px;
+}
+
+.layers .dropdown-toggle:hover {
+  color: black; /* Оставляем черный цвет при наведении */
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 35px;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  z-index: 1001;
+}
+
+.dropdown-item {
+  padding: 10px;
+  color: #000;
+  text-decoration: none;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f8f8;
+}
+
+/* Показывать меню при наведении */
+.dropdown.show .dropdown-menu {
+  display: block;
+  opacity: 1;
+}
+.content-container {
+  display: flex;
+  margin-top: 50px; /* Убедимся, что отступ ровно под верхним меню */
+  height: calc(100vh - 160px); /* Высота для контента с учетом верхнего и нижнего меню */
+  padding: 0; /* Убираем возможные дополнительные отступы */
+}
+
+#map-container {
+  flex-grow: 1;
+  height: calc(100vh - 160px); /* Учитываем высоту верхнего меню и нижней панели */
+  margin-top: 0; /* Убираем любые отступы сверху */
+}
+
+#main-menu {
+  position: fixed;
+  left: 0;
+  top: 50px; /* Отступ для верхнего меню */
+  bottom: 0;
+  width: 250px;
+  background-color: #f4f4f4;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1001;
+}
+
+#main-menu.show {
+  transform: translateX(0);
+}

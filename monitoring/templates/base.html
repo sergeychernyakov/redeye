@@ -1,0 +1,75 @@
+<!-- monitoring/templates/base.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Карта{% endblock %}</title>
+    
+    {% load static %}
+    <!-- Bootstrap styles -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Main styles -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+
+    <!-- Верхнее меню -->
+    <div id="top-menu">
+      <div class="menu-toggle">
+          <i class="bi bi-list"></i> <!-- Иконка меню из Bootstrap -->
+      </div>
+      <div class="home">
+          <i class="bi bi-house-door"></i> <!-- Иконка домика из Bootstrap --> 
+      </div>
+      <div class="separator">|</div>
+      <div class="layers">
+          Карта <span class="separator">></span> Слои 
+          <span class="separator">></span>
+          <div class="dropdown">
+              <a href="#" class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Основы
+              </a>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="{% url 'yandex_map' %}">Яндекс Карты</a>
+                  <a class="dropdown-item" href="{% url 'floor_plan' %}">Схема</a>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    <!-- Скрытое меню (Главное меню) -->
+    <div id="main-menu">
+      <ul>
+        <li>Администрирование</li>
+        <li>Действия системы</li>
+        <li>Действия пользователей</li>
+        <li>Серверы</li>
+        <li>Журнал событий</li>
+        <li>Импорт CSV</li>
+      </ul>
+    </div>
+
+    <!-- Основное содержимое -->
+    <div class="content-container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Подключение Bootstrap и других JS библиотек -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Toggle main menu -->
+    <script>
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
+            document.getElementById('main-menu').classList.toggle('show');
+        });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
