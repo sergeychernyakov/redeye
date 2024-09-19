@@ -47,7 +47,7 @@
     {% endif %}
   </div>
 
-  <!-- Поле для выбора типа камеры (животное/растение) -->
+  <!-- Поле для выбора типа камеры (камера для животного/растения) -->
   <div class="form-group">
     <label for="detector-type">Тип камеры:</label>
     <select class="form-control" id="detector-type" name="detector_type" required>
@@ -66,45 +66,11 @@
   <!-- RTSP URL -->
   <div class="form-group">
     <label for="rtsp-url">RTSP URL:</label>
-    <input type="text" class="form-control" id="rtsp-url" name="rtsp_url" placeholder="Введите RTSP URL (например, rtsp://...)" value="{{ form.rtsp_url.value }}" required required oninput="fillFromRTSP()">
+    <input type="text" class="form-control" id="rtsp-url" name="rtsp_url" placeholder="Введите RTSP URL (например, rtsp://...)" value="{{ form.rtsp_url.value }}" required oninput="fillFromRTSP()">
     <!-- Ошибки для поля 'rtsp_url' -->
     {% if form.rtsp_url.errors %}
       <div class="text-danger">
         {{ form.rtsp_url.errors }}
-      </div>
-    {% endif %}
-  </div>
-
-  <!-- VPN параметры (IP, логин, пароль) -->
-  <div class="form-group">
-    <label for="vpn-server-ip">VPN IP:</label>
-    <input type="text" class="form-control" id="vpn-server-ip" name="vpn_server_ip" placeholder="Введите IP VPN сервера" value="{{ form.vpn_server_ip.value }}" required required oninput="fillFromRTSP()">
-    <!-- Ошибки для поля 'vpn_server_ip' -->
-    {% if form.vpn_server_ip.errors %}
-      <div class="text-danger">
-        {{ form.vpn_server_ip.errors }}
-      </div>
-    {% endif %}
-  </div>
-
-  <div class="form-group">
-    <label for="vpn-username">VPN Логин:</label>
-    <input type="text" class="form-control" id="vpn-username" name="vpn_username" placeholder="Введите VPN логин" value="{{ form.vpn_username.value }}" required required oninput="fillFromRTSP()">
-    <!-- Ошибки для поля 'vpn_username' -->
-    {% if form.vpn_username.errors %}
-      <div class="text-danger">
-        {{ form.vpn_username.errors }}
-      </div>
-    {% endif %}
-  </div>
-
-  <div class="form-group">
-    <label for="vpn-password">VPN Пароль:</label>
-    <input type="password" class="form-control" id="vpn-password" name="vpn_password" placeholder="Введите VPN пароль" value="{{ form.vpn_password.value }}" required required oninput="fillFromRTSP()">
-    <!-- Ошибки для поля 'vpn_password' -->
-    {% if form.vpn_password.errors %}
-      <div class="text-danger">
-        {{ form.vpn_password.errors }}
       </div>
     {% endif %}
   </div>
@@ -240,5 +206,4 @@
           toggleIcon.className = 'bi bi-chevron-down';  // Меняем иконку на стрелку вниз
       }
   }
-  </script>
-  
+</script>

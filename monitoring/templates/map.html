@@ -42,7 +42,8 @@
 
   <!-- Контекстное меню -->
   <div id="context-menu" class="context-menu">
-    <a id="add-camera">Добавить камеру</a>
+    <a id="add-animal">Добавить камеру для животного</a>
+    <a id="add-plant">Добавить камеру для растения</a>
   </div>
 
 {% endblock %}
@@ -52,7 +53,8 @@
 
   <script>
     var contextMenu = document.getElementById('context-menu');
-    var addCameraLink = document.getElementById('add-camera');
+    var addAnimalLink = document.getElementById('add-animal');
+    var addPlantLink = document.getElementById('add-plant');
     var detectorPanel = document.getElementById('detector-panel');
     var closeDetectorPanelButton = document.getElementById('close-detector-panel');
     var rightClickCoords = null;
@@ -76,20 +78,32 @@
       e.originalEvent.preventDefault(); // Предотвращаем стандартное контекстное меню
     }
 
-    // Добавить камеру на карту
-    addCameraLink.onclick = function () {
-      // Показать панель создания камеры при клике на "Добавить камеру"
-      detectorPanel.classList.toggle('show'); // Показать/скрыть панель
+    // Добавить камеру для наблюдения за животным
+    addAnimalLink.onclick = function () {
+      openDetectorPanel('animal');
+    };
 
-      if (rightClickCoords && window.activeMap) {
+    // Добавить камеру для наблюдения за растением
+    addPlantLink.onclick = function () {
+      openDetectorPanel('plant');
+    };
 
-        // Заполняем форму добавления камеры с координатами
+    // Открыть панель создания детектора с заданным типом
+    function openDetectorPanel(type) {
+      // Показать панель создания детектора
+      detectorPanel.classList.add('show');
+
+      if (rightClickCoords) {
+        // Заполняем форму добавления детектора с координатами
         document.getElementById('latitude').value = rightClickCoords.lat;
         document.getElementById('longitude').value = rightClickCoords.lng;
-
-        closeContextMenu();
       }
-    };
+
+      // Устанавливаем тип детектора
+      document.getElementById('detector-type').value = type;
+
+      closeContextMenu();
+    }
 
     // Функция инициализации контекстного меню
     function initializeContextMenu() {
@@ -111,6 +125,8 @@
       }
     });
 
+    // Инициализация контекстного меню
+    initializeContextMenu();
   </script>
   {% block initialisation_map_scripts %}{% endblock %}
 {% endblock %}
