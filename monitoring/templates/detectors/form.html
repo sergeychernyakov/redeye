@@ -14,7 +14,7 @@
   <!-- Имя детектора -->
   <div class="form-group">
     <label for="name">Название детектора:</label>
-    <input type="text" class="form-control" id="name" name="name" value="{{ form.name.value }}Лестница" required>
+    <input type="text" class="form-control" id="name" name="name" value="{{ form.name.value }}" required>
     <!-- Ошибки для поля 'name' -->
     {% if form.name.errors %}
       <div class="text-danger">
@@ -26,7 +26,7 @@
   <!-- RTSP URL -->
   <div class="form-group">
     <label for="rtsp-url">RTSP URL:</label>
-    <input type="text" class="form-control" id="rtsp-url" name="rtsp_url" placeholder="Введите RTSP URL (например, rtsp://...)" value="{{ form.rtsp_url.value }}rtsp://admin:campass911@192.168.9.161:554/stream1" required required oninput="fillFromRTSP()">
+    <input type="text" class="form-control" id="rtsp-url" name="rtsp_url" placeholder="Введите RTSP URL (например, rtsp://...)" value="{{ form.rtsp_url.value }}" required required oninput="fillFromRTSP()">
     <!-- Ошибки для поля 'rtsp_url' -->
     {% if form.rtsp_url.errors %}
       <div class="text-danger">
@@ -38,7 +38,7 @@
   <!-- VPN параметры (IP, логин, пароль) -->
   <div class="form-group">
     <label for="vpn-server-ip">VPN IP:</label>
-    <input type="text" class="form-control" id="vpn-server-ip" name="vpn_server_ip" placeholder="Введите IP VPN сервера" value="{{ form.vpn_server_ip.value }}178.209.97.254" required required oninput="fillFromRTSP()">
+    <input type="text" class="form-control" id="vpn-server-ip" name="vpn_server_ip" placeholder="Введите IP VPN сервера" value="{{ form.vpn_server_ip.value }}" required required oninput="fillFromRTSP()">
     <!-- Ошибки для поля 'vpn_server_ip' -->
     {% if form.vpn_server_ip.errors %}
       <div class="text-danger">
@@ -49,7 +49,7 @@
 
   <div class="form-group">
     <label for="vpn-username">VPN Логин:</label>
-    <input type="text" class="form-control" id="vpn-username" name="vpn_username" placeholder="Введите VPN логин" value="{{ form.vpn_username.value }}argo1" required required oninput="fillFromRTSP()">
+    <input type="text" class="form-control" id="vpn-username" name="vpn_username" placeholder="Введите VPN логин" value="{{ form.vpn_username.value }}" required required oninput="fillFromRTSP()">
     <!-- Ошибки для поля 'vpn_username' -->
     {% if form.vpn_username.errors %}
       <div class="text-danger">
@@ -60,7 +60,7 @@
 
   <div class="form-group">
     <label for="vpn-password">VPN Пароль:</label>
-    <input type="password" class="form-control" id="vpn-password" name="vpn_password" placeholder="Введите VPN пароль" value="{{ form.vpn_password.value }}X9eDB@Mxp_" required required oninput="fillFromRTSP()">
+    <input type="password" class="form-control" id="vpn-password" name="vpn_password" placeholder="Введите VPN пароль" value="{{ form.vpn_password.value }}" required required oninput="fillFromRTSP()">
     <!-- Ошибки для поля 'vpn_password' -->
     {% if form.vpn_password.errors %}
       <div class="text-danger">
@@ -72,7 +72,7 @@
   <!-- Автозаполненные поля (IP-адрес и порт) -->
   <div class="form-group">
     <label for="ip">IP (*):</label>
-    <input type="text" class="form-control" id="ip" name="ip" placeholder="IP-адрес детектора" value="{{ form.ip.value }}192.168.9.161" required readonly>
+    <input type="text" class="form-control" id="ip" name="ip" placeholder="IP-адрес детектора" value="{{ form.ip.value }}" required readonly>
     <!-- Ошибки для поля 'ip' -->
     {% if form.ip.errors %}
       <div class="text-danger">
@@ -83,7 +83,7 @@
 
   <div class="form-group">
     <label for="port">Порт (*):</label>
-    <input type="text" class="form-control" id="port" name="port" placeholder="Порт детектора" value="{{ form.port.value }}554" required readonly>
+    <input type="text" class="form-control" id="port" name="port" placeholder="Порт детектора" value="{{ form.port.value }}" required readonly>
     <!-- Ошибки для поля 'port' -->
     {% if form.port.errors %}
       <div class="text-danger">
@@ -112,39 +112,6 @@
       {% if form.longitude.errors %}
         <div class="text-danger">
           {{ form.longitude.errors }}
-        </div>
-      {% endif %}
-    </div>
-
-    <div class="form-group">
-      <label for="manufacturer">Производитель:</label>
-      <select class="form-control" id="manufacturer" name="manufacturer">
-        <option value="">Не выбран</option>
-        <option value="SmartVision3" {% if form.manufacturer.value == 'SmartVision3' %}selected{% endif %}>SmartVision3</option>
-        <option value="Axis" {% if form.manufacturer.value == 'Axis' %}selected{% endif %}>Axis</option>
-        <option value="Hikvision" {% if form.manufacturer.value == 'Hikvision' %}selected{% endif %}>Hikvision</option>
-        <option value="Dahua" {% if form.manufacturer.value == 'Dahua' %}selected{% endif %}>Dahua</option>
-      </select>
-      <!-- Ошибки для поля 'manufacturer' -->
-      {% if form.manufacturer.errors %}
-        <div class="text-danger">
-          {{ form.manufacturer.errors }}
-        </div>
-      {% endif %}
-    </div>
-    
-    <div class="form-group">
-      <label for="model">Модель:</label>
-      <select class="form-control" id="model" name="model">
-        <option value="SmartVision3" {% if form.model.value == 'SmartVision3' %}selected{% endif %}>SmartVision3</option>
-        <option value="Axis P1365" {% if form.model.value == 'Axis P1365' %}selected{% endif %}>Axis P1365</option>
-        <option value="Hikvision DS-2CD2143G0" {% if form.model.value == 'Hikvision DS-2CD2143G0' %}selected{% endif %}>Hikvision DS-2CD2143G0</option>
-        <option value="Dahua IPC-HDW4431C-A" {% if form.model.value == 'Dahua IPC-HDW4431C-A' %}selected{% endif %}>Dahua IPC-HDW4431C-A</option>
-      </select>
-      <!-- Ошибки для поля 'model' -->
-      {% if form.model.errors %}
-        <div class="text-danger">
-          {{ form.model.errors }}
         </div>
       {% endif %}
     </div>

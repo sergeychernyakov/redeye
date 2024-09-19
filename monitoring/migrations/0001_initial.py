@@ -19,12 +19,12 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('image', models.ImageField(upload_to=monitoring.models.area.area_image_upload_path, verbose_name='Схема этажа')),
-                ('order', models.PositiveIntegerField(verbose_name='Порядок этажа')),
+                ('order', models.PositiveIntegerField(verbose_name='Порядок схемы')),
                 ('background_color', colorfield.fields.ColorField(default='#ffffff', image_field=None, max_length=25, samples=None, verbose_name='Цвет подложки')),
             ],
             options={
-                'verbose_name': 'Этаж',
-                'verbose_name_plural': 'Этажи',
+                'verbose_name': 'Схема',
+                'verbose_name_plural': 'Схемы',
                 'ordering': ['order'],
             },
         ),

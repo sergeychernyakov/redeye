@@ -17,19 +17,19 @@ class Area(models.Model):
     background_color = ColorField("Цвет подложки", default="#ffffff")  # Цвет фона подложки с выбором цвета
 
     class Meta:
-        verbose_name = "Этаж"
-        verbose_name_plural = "Этажи"
+        verbose_name = "Схема"
+        verbose_name_plural = "Схемы"
         ordering = ['order']  # Автоматическая сортировка по порядку
 
     def __str__(self) -> str:
-        return f"Этаж {self.order} карты {self.map.name}"
+        return f"Схема {self.order} карты {self.map.name}"
 
     def image_tag(self):
         if self.image:
             return mark_safe(f'<img src="{self.image.url}" width="300" height="auto" />')
         return "No Image Available"
     
-    image_tag.short_description = "Этаж"
+    image_tag.short_description = "Схема"
 
     @property
     def incidents(self):
