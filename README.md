@@ -80,7 +80,14 @@
    pip install -r requirements.txt
    ```
 
-5. **Настройка базы данных**:
+5. **Установите переменные окружения**:
+   ```bash
+   cp .env.example .env
+   ```
+   Убедитесь, что вы указали корректные значения переменных окружения, включая:
+   - `YANDEX_API_KEY`
+
+6. **Настройка базы данных**:
    Создайте базу данных PostgreSQL:
    ```bash
    createdb redeye_db
@@ -91,28 +98,29 @@
    python manage.py migrate
    ```
 
-6. **Запуск Django сервера**:
+7. **Запуск Django сервера**:
    Для запуска сервера разработки:
    ```bash
    python manage.py runserver 8001
    ```
 
-7. **Export the Installed Packages**:
+8. **Export the Installed Packages**:
     ```bash
     pip freeze > requirements.txt
     ```
 
-
-8. **Изменения в базе данных**:
+9. **Изменения в базе данных**:
     ```bash
     python manage.py makemigrations
     python manage.py migrate
    ```
-9. ** Seeds **
+
+10. ** Seeds **
     ```bash
     python manage.py seeder
     ```
-10 ** Пересоздать базу данных **
+
+11 ** Пересоздать базу данных **
     ```bash
     dropdb redeye_db 
     createdb redeye_db
