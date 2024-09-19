@@ -1,4 +1,4 @@
-<!-- monitoring/templates/maps/floor-plan.html -->
+<!-- monitoring/templates/maps/area-plan.html -->
 {% extends '../map.html' %}
 {% load static %}
 
@@ -11,7 +11,7 @@
   <style>
     /* Стиль для белого фона карты */
     #map-container {
-      background-color: {{ floor.background_color|default:"#FFFFFF" }};
+      background-color: {{ area.background_color|default:"#FFFFFF" }};
     }
   </style>
 {% endblock %}
@@ -23,10 +23,10 @@
 
 
 
-    {% if floor_image_url %}
+    {% if area_image_url %}
       // Получаем размеры изображения из контекста
-      var imageWidth = {{ floor_image_width }};
-      var imageHeight = {{ floor_image_height }};
+      var imageWidth = {{ area_image_width }};
+      var imageHeight = {{ area_image_height }};
 
       // Координаты для изображения
       var imageBounds = [[0, 0], [imageHeight, imageWidth]];
@@ -44,7 +44,7 @@
       window.activeMap = mapInstance;
 
       // Добавляем изображение плана этажа на карту
-      L.imageOverlay('{{ floor_image_url }}', imageBounds).addTo(mapInstance);
+      L.imageOverlay('{{ area_image_url }}', imageBounds).addTo(mapInstance);
       mapInstance.setMaxBounds(imageBounds);
 
       // Рассчитываем начальный зум, основываясь на размере контейнера и изображения

@@ -1,4 +1,4 @@
-// monitoring/static/admin/js/floor_image_modal.js
+// monitoring/static/admin/js/area_image_modal.js
 
 function showModal(imageUrl) {
   // Создаем элементы модального окна
@@ -13,7 +13,7 @@ function showModal(imageUrl) {
   modal.style.justifyContent = 'center';
   modal.style.alignItems = 'center';
   modal.style.zIndex = '10000';
-  modal.id = 'floorModal';
+  modal.id = 'areaModal';
 
   const modalContent = document.createElement('div');
   modalContent.style.position = 'relative';

@@ -1,7 +1,7 @@
 # monitoring/serializers.py
 
 from rest_framework import serializers
-from .models import Object, Map, Floor, Detector
+from .models import Object, Map, Area, Detector
 
 # 1. ObjectSerializer
 class ObjectSerializer(serializers.ModelSerializer):
@@ -19,12 +19,12 @@ class MapSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'map_type', 'object']  # Указываем нужные поля
 
 
-# 3. FloorSerializer
-class FloorSerializer(serializers.ModelSerializer):
+# 3. AreaSerializer
+class AreaSerializer(serializers.ModelSerializer):
     map = MapSerializer(read_only=True)  # Вложенный сериализатор для Map
 
     class Meta:
-        model = Floor
+        model = Area
         fields = ['id', 'map', 'image', 'order']  # Указываем нужные поля
 
 

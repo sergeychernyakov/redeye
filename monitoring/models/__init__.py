@@ -2,5 +2,5 @@
 
 from .detector import Detector
 from .map import Map
-from .floor import Floor
+from .area import Area
 from .object import Object

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
-from .models import Detector, Map, Object, Floor
+from .models import Detector, Map, Object, Area
 
 # Переопределяем заголовок и заголовок страницы администрирования
 admin.site.site_header = "Панель администратора"
@@ -32,7 +32,7 @@ class MapAdmin(admin.ModelAdmin):
     list_filter = ('map_type',)
     search_fields = ('name', 'object__name')
 
-class FloorAdmin(admin.ModelAdmin):
+class AreaAdmin(admin.ModelAdmin):
     list_display = ('map', 'order', 'image_thumbnail')
     readonly_fields = ['image_thumbnail']
     fields = ('map', 'order', 'background_color', 'image_thumbnail')
@@ -51,7 +51,7 @@ class FloorAdmin(admin.ModelAdmin):
 
     class Media:
         # Подключаем кастомный JS файл для модального окна
-        js = ('admin/js/floor_image_modal.js',)
+        js = ('admin/js/area_image_modal.js',)
 
 # Настройка отображения модели Detector в админке
 class DetectorAdmin(admin.ModelAdmin):
@@ -63,5 +63,5 @@ class DetectorAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Object, ObjectAdmin)
 admin.site.register(Map, MapAdmin)
-admin.site.register(Floor, FloorAdmin)
+admin.site.register(Area, AreaAdmin)
 admin.site.register(Detector, DetectorAdmin)

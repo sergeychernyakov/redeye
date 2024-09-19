@@ -3,7 +3,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from .map import Map
-from .floor import Floor
+from .area import Area
 
 class Detector(models.Model):
     class Meta:
@@ -13,7 +13,7 @@ class Detector(models.Model):
     # Основные поля камеры
     name = models.CharField("Название", max_length=100)
     map = models.ForeignKey(Map, on_delete=models.CASCADE, related_name="detectors")  # Связь с картой
-    floor = models.ForeignKey(Floor, on_delete=models.CASCADE, related_name="detectors", blank=True, null=True)  # Связь с этажом (опционально)
+    area = models.ForeignKey(Area, on_delete=models.CASCADE, related_name="detectors", blank=True, null=True)  # Связь с этажом (опционально)
     ip = models.GenericIPAddressField("IP", protocol="both", unpack_ipv4=False)
     port = models.PositiveIntegerField("Порт")
     internal_id = models.CharField("Внутренний идентификатор", max_length=100, blank=True, null=True)

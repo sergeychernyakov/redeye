@@ -5,7 +5,7 @@ import shutil
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
-from monitoring.models import Object, Map, Floor, Detector
+from monitoring.models import Object, Map, Area, Detector
 import random
 from PIL import Image  # Подключаем Pillow для работы с изображениями
 from django.utils import timezone
@@ -101,31 +101,31 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f'Карта {mall_map.name} создана'))
 
         # Пути к изображениям этажей
-        floors_images = [
-            'monitoring/static/img/clover-first-floor-plan.png',
-            'monitoring/static/img/clover-second-floor-plan.png',
-            'monitoring/static/img/clover-third-floor-plan.png',
+        areas_images = [
+            'monitoring/static/img/clover-first-area-plan.png',
+            'monitoring/static/img/clover-second-area-plan.png',
+            'monitoring/static/img/clover-third-area-plan.png',
         ]
 
-        for i, floor_image in enumerate(floors_images, start=1):
+        for i, area_image in enumerate(areas_images, start=1):
             # Определяем путь к изображению в папке media
-            media_image_path = os.path.join(settings.MEDIA_ROOT, f'maps/{mall_map.id}/floors/{os.path.basename(floor_image)}')
+            media_image_path = os.path.join(settings.MEDIA_ROOT, f'maps/{mall_map.id}/areas/{os.path.basename(area_image)}')
             
-            image_width, image_height = self.get_image_size(floor_image)
+            image_width, image_height = self.get_image_size(area_image)
 
             # Копируем изображение из static в media
             os.makedirs(os.path.dirname(media_image_path), exist_ok=True)
-            shutil.copyfile(floor_image, media_image_path)
+            shutil.copyfile(area_image, media_image_path)
 
             # Создание этажа
-            floor = Floor.objects.create(
+            area = Area.objects.create(
                 map=mall_map,
-                image=f'maps/{mall_map.id}/floors/{os.path.basename(floor_image)}',
+                image=f'maps/{mall_map.id}/areas/{os.path.basename(area_image)}',
                 order=i,
                 background_color="#F5F6FA"
             )
             # Добавляем 3-10 детекторов на каждый этаж
-            self.add_detectors_to_floor(floor, image_width, image_height)
+            self.add_detectors_to_area(area, image_width, image_height)
             
             self.stdout.write(self.style.SUCCESS(f'Этаж {i} добавлен для карты {mall_map.name}'))
 
@@ -138,7 +138,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.ERROR(f"Ошибка при получении размера изображения: {e}"))
             return 1000, 800  # Значения по умолчанию, если что-то пошло не так
 
-    def add_detectors_to_floor(self, floor, image_width, image_height):
+    def add_detectors_to_area(self, area, image_width, image_height):
         # Задаем минимальные и максимальные значения для координат (широта и долгота)
         min_latitude = 0
         max_latitude = image_height  # Ограничение по высоте изображения
@@ -150,8 +150,8 @@ class Command(BaseCommand):
             try:
                 detector = Detector.objects.create(
                     name=f"Детектор {random.randint(1, 1000)}",
-                    map=floor.map,
-                    floor=floor,  # Привязка детектора к этажу
+                    map=area.map,
+                    area=area,  # Привязка детектора к этажу
                     ip='192.168.9.161',
                     port=554,
                     rtsp_url='rtsp://admin:campass911@192.168.9.161:554/stream1',
@@ -164,9 +164,9 @@ class Command(BaseCommand):
                 detector.save()
 
                 # Log detector creation
-                logging.info(f"Created detector {detector.name} on floor {floor.order}")
+                logging.info(f"Created detector {detector.name} on area {area.order}")
 
             except Exception as e:
                 # Log any errors during detector creation
-                logging.error(f"Error creating detector on floor {floor.order}: {e}")
+                logging.error(f"Error creating detector on area {area.order}: {e}")
 

@@ -7,7 +7,7 @@ class DetectorForm(forms.ModelForm):
     class Meta:
         model = Detector
         fields = [
-            'name', 'floor', 'ip', 'port', 'internal_id', 'address', 'web_interface_url', 
+            'name', 'area', 'ip', 'port', 'internal_id', 'address', 'web_interface_url', 
             'serial_number', 'rtsp_url', 'username', 'password', 'vpn_server_ip',
             'vpn_username', 'vpn_password', 'latitude', 'longitude',
             'image_port', 'manufacturer', 'model', 'detector_type', 'access_group',

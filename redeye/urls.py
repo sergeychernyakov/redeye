@@ -1,7 +1,7 @@
-# redyey/urls.py
+# redeye/urls.py
 
 """
-URL configuration for redyey project.
+URL configuration for redeye project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -21,14 +21,14 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from django.conf.urls.static import static
-from monitoring.views import floor_plan, yandex_map, home_redirect
+from monitoring.views import area_plan, yandex_map, home_redirect
 from monitoring.views import MapDetailView, ObjectCreateView, MapCreateView
 from monitoring.views import DetectorCreateView, DetectorUpdateView, DetectorDetailView
 
 urlpatterns = [
     path('', home_redirect, name='home'),
     
-    path('floor-plan/', floor_plan, name='floor_plan'),
+    path('area-plan/', area_plan, name='area_plan'),
     path('yandex-map/', yandex_map, name='yandex_map'),
 
     # Админка

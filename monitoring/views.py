@@ -4,7 +4,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView, UpdateView
-from .models import Map, Floor, Object, Detector
+from .models import Map, Area, Object, Detector
 from django.core.serializers.json import DjangoJSONEncoder
 from .forms import DetectorForm
 import json
@@ -17,20 +17,20 @@ class MapDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         
         # Получаем первый этаж, связанный с этой картой
-        floor = Floor.objects.filter(map=self.object).first()
+        area = Area.objects.filter(map=self.object).first()
         
-        if floor and floor.image:
-            detectors = floor.detectors.all()
+        if area and area.image:
+            detectors = area.detectors.all()
             detectors_data = list(detectors.values('name', 'latitude', 'longitude'))
             
-            context['floor_image_url'] = floor.image.url
-            context['floor_image_width'] = floor.image.width  # Используем размеры изображения
-            context['floor_image_height'] = floor.image.height
-            context['floor'] = floor
+            context['area_image_url'] = area.image.url
+            context['area_image_width'] = area.image.width  # Используем размеры изображения
+            context['area_image_height'] = area.image.height
+            context['area'] = area
             context['detectors_json'] = json.dumps(detectors_data, cls=DjangoJSONEncoder)
         else:
-            context['floor'] = None
-            context['floor_image_url'] = None
+            context['area'] = None
+            context['area_image_url'] = None
             context['detectors_json'] = "[]"
 
         return context
@@ -39,7 +39,7 @@ class MapDetailView(DetailView):
         if self.object.map_type == 'yandex':
             return ['maps/yandex-map.html']
         else:
-            return ['maps/floor-plan.html']
+            return ['maps/area-plan.html']
 
 class MapCreateView(CreateView):
     model = Map
@@ -147,8 +147,8 @@ def home_redirect(request):
 
 # Представление для главной страницы, доступное только авторизованным пользователям
 @login_required
-def floor_plan(request):
-    return render(request, 'maps/floor-plan.html')
+def area_plan(request):
+    return render(request, 'maps/area-plan.html')
 
 @login_required
 def yandex_map(request):

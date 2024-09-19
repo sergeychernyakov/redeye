@@ -2,7 +2,7 @@
 <form method="post" action="{% url 'create_detector' map.id %}">
   {% csrf_token %}
 
-  <input type="hidden" id="floor" name="floor" value="{{ floor.id }}">
+  <input type="hidden" id="area" name="area" value="{{ area.id }}">
 
   <!-- Ошибки, не связанные с конкретными полями -->
   {% if form.non_field_errors %}
